@@ -17,14 +17,15 @@ display()= prints the all data from queue
 class circuarQueue{
     constructor(size){
         this.items= new Array(size)
-        this.size= size // size of queue
-        this.rear=-1
-        this.front=-1
+        this.size = size // size of queue
+        this.rear = -1
+        this.front = -1
+        this.length =0;
     }
 
     isEmpty()
     {
-       if (this.front==this.rear==-1){
+       if (this.length===0){
         return true
     }
     else{
@@ -33,21 +34,28 @@ class circuarQueue{
 }
 
   isFull(){
-    return (this.rear+1)%this.size==this.front
+    return this.length===this.size
   }
 
 
   enqueue(data){
     if(this.isEmpty()){  // checks queue is empty or not
-    this.rear=0; // first insertion
+                     // first insertion
     this.front=0;
+    this.rear=  (this.rear+1)%this.size;
+    this.items[this.rear]= data;
+    this.length++;
+    
     }
-    if(this.isFull()){
+    else if(this.isFull()){
         console.log("queue is full")
     }
+    else{
+    this.rear=  (this.rear+1)%this.size;
+    this.items[this.rear]= data;
+    this.length++;
+    }
     
-    this.items[this.rear]= data
-    this.rear=  (this.rear+1)%this.size
 
   }
 
@@ -55,9 +63,20 @@ class circuarQueue{
     if(this.isEmpty()){
         console.log('queue is empty')
     }
+     else{
     let removedData = this.items[this.front]
-    this.front= (this.front+1)%this.size
+    this.items[this.front]=null
+    this.length--;
+
+    if(this.rear===this.front){
+        this.rear=this.front=-1;
+    }
+    else{
+        this.front= (this.front+1)%this.size
+    }
     return removedData
+  }
+   
   }
 
   peek(){
@@ -74,10 +93,13 @@ class circuarQueue{
     }else{
         let i
         let str=""
-        for(i=this.front;i!==this.rear;i=(i+1)%this.size){
-            str =str+this.items[i] + ""
+        for(i=this.front;i<this.rear;i=(i+1)%this.size){
+         
+          str =str+this.items[i] + " "   // " " is for space between element
+          
         }
-        str =str+this.items[i] + ""
+        str =str+this.items[i] 
+        console.log(str)
     }
   }
 }
@@ -91,10 +113,16 @@ cqueue.enqueue(6);
 cqueue.enqueue(7);
 cqueue.enqueue(8);
 cqueue.enqueue(9);
+cqueue.enqueue(10);
+
   console.log(cqueue.isFull())
-  console.log(cqueue.display());
+  cqueue.display()
   
   console.log(cqueue.dequeue())
   console.log(cqueue.dequeue())
+  console.log(cqueue.dequeue())
+  //console.log(cqueue.dequeue())
+  //console.log(cqueue.dequeue())
 
-  console.log(cqueue.display());
+  cqueue.display()
+  console.log(cqueue.peek())
