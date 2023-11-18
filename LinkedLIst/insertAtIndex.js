@@ -5,7 +5,7 @@ class Node {
     }
 }
 
-class insertAtIndex {
+class InsertAtIndex {
     constructor() {
         this.size = 0;
 
@@ -37,6 +37,33 @@ class insertAtIndex {
             node.next = prev.next; // index 2=prev.next , index1 = prev
             prev.next = node;
             this.size++
+        }
+    }
+
+    deleteByItem(value){
+        if(this.isEmpty()) return null
+
+        else if(this.head.value===value){
+           
+            this.head=this.head.next
+            this.size--
+            return value
+           
+        }
+        else{
+            let prev = this.head
+            while(prev.next&&prev.next.value!==value){
+                prev=prev.next
+            }
+            if(prev.next){
+                const removedNode=prev.next;
+                prev.next=removedNode.next;
+                this.size--
+                return value
+            }
+           return null
+
+
         }
     }
 
@@ -93,7 +120,7 @@ class insertAtIndex {
     }
 }
 
-const linkedList = new insertAtIndex();
+const linkedList = new InsertAtIndex();
 linkedList.insert(10, 2);
 linkedList.insert(10, 0);
 linkedList.insert(20, 1);
@@ -113,4 +140,7 @@ linkedList.display();
 console.log(linkedList.deleteFrom(2));
 
 linkedList.display();
+
+linkedList.deleteByItem(20);
+linkedList.display()
 
