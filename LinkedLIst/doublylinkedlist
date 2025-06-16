@@ -1,0 +1,159 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* prev;
+    struct Node* next;
+} Node;
+
+// Create a new node with given value
+Node* createNode(int value) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = value;
+    newNode->prev = NULL;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Insert at the beginning
+void insertFirst(Node** head, int value) {
+    Node* newNode = createNode(value);
+    newNode->next = *head;
+    if (*head != NULL)
+        (*head)->prev = newNode;
+    *head = newNode;
+}
+
+// Insert at the end
+void insertLast(Node** head, int value) {
+    Node* newNode = createNode(value);
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+    Node* temp = *head;
+    while (temp->next != NULL)
+        temp = temp->next;
+    temp->next = newNode;
+    newNode->prev = temp;
+}
+
+// Delete node at given position (1-based)
+void deleteAtPosition(Node** head, int pos) {
+    if (pos <= 0) {
+        printf("Invalid position!\n");
+        return;
+    }
+    Node* temp = *head;
+    int count = 1;
+
+    while (temp && count < pos) {
+        temp = temp->next;
+        count++;
+    }
+
+    if (temp == NULL) {
+        printf("Position out of range.\n");
+        return;
+    }
+
+    if (temp->prev)
+        temp->prev->next = temp->next;
+    else
+        *head = temp->next;
+
+    if (temp->next)
+        temp->next->prev = temp->prev;
+
+    printf("Deleted node at position %d with value %d\n", pos, temp->data);
+    free(temp);
+}
+
+// Traverse forward and print list
+void traverseForward(Node* head) {
+    printf("List (forward): ");
+    while (head) {
+        printf("%d ", head->data);
+        head = head->next;
+    }
+    printf("\n");
+}
+
+// Traverse backward and print list
+void traverseBackward(Node* head) {
+    if (!head) {
+        printf("List is empty.\n");
+        return;
+    }
+    while (head->next)
+        head = head->next;
+    printf("List (backward): ");
+    while (head) {
+        printf("%d ", head->data);
+        head = head->prev;
+    }
+    printf("\n");
+}
+
+// Free entire list memory
+void freeList(Node* head) {
+    Node* temp;
+    while (head) {
+        temp = head;
+        head = head->next;
+        free(temp);
+    }
+}
+
+int main() {
+    Node* head = NULL;
+    int choice, value, position;
+    char ch = 'y';
+
+    do {
+        printf("\n--- Doubly Linked List Menu ---\n");
+        printf("1. Insert at First\n");
+        printf("2. Insert at Last\n");
+        printf("3. Delete at Position\n");
+        printf("4. Traverse Forward\n");
+        printf("5. Traverse Backward\n");
+
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter value to insert at first: ");
+                scanf("%d", &value);
+                insertFirst(&head, value);
+                break;
+            case 2:
+                printf("Enter value to insert at last: ");
+                scanf("%d", &value);
+                insertLast(&head, value);
+                break;
+            case 3:
+                printf("Enter position to delete: ");
+                scanf("%d", &position);
+                deleteAtPosition(&head, position);
+                break;
+            case 4:
+                traverseForward(head);
+                break;
+            case 5:
+                traverseBackward(head);
+                break;
+            default:
+                printf("Invalid choice.\n");
+        }
+
+        printf("Do you want to continue? If yes press y, if no press any other key: ");
+        fflush(stdin);  // clear input buffer (works in DevC++)
+        scanf("%c", &ch);
+
+    } while (ch == 'y' || ch == 'Y');
+
+    freeList(head);
+    return 0;
+}
